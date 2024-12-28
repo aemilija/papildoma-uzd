@@ -8,18 +8,18 @@ int main() {
     cout << "Input file name: ";
     cin >> inputFileName;
 
-    map<string, int> wordCounts = countWords(inputFileName);
+    map<string, WordData> wordData = countWords(inputFileName);
  
     cout << "Do you want to print the word count to the terminal? (y/n) "; 
     cin >> writeChoice;
 
     if (writeChoice == 'y') {
-        writeWordCountsToTerminal(wordCounts);
+        writeWordDataToTerminal(wordData);
     }
     else {
         cout << "Output file name: ";
         cin >> outputFileName;
-        writeWordCountsToFile(wordCounts, outputFileName);
+        writeWordDataToFile(wordData, outputFileName);
     }
 
     cout << "Word count complete." << endl;
