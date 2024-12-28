@@ -1,4 +1,3 @@
-
 #ifndef HEADER_H
 #define HEADER_H
 
@@ -9,13 +8,20 @@
 #include <string>
 #include <cctype>
 #include <stdexcept>
+#include <set>
+#include <iomanip>
 
 using namespace std;
 
+struct WordData {
+    int count; 
+    set<int> lineNums;        
+};
+
 //functions.cpp
 string cleanWord(const string& word);
-map<string, int> countWords(const string& fileName);
-void writeWordCountsToFile(const map<string, int>& wordCounts, const string& fileName);
-void writeWordCountsToTerminal(const map<string, int>& wordCounts);
+map<string, WordData> countWords(const string& fileName);
+void writeWordDataToFile(const map<string, WordData>& wordData, const string& fileName);
+void writeWordDataToTerminal(const map<string, WordData>& wordData);
 
 #endif
