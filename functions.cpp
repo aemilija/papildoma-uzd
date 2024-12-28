@@ -10,48 +10,77 @@ string cleanWord(const string& word) {
     return cleaned;
 }
 
-map<string, int> countWords(const string& fileName) {
+map<string, WordData> countWords(const string& fileName) {
     ifstream inputFile(fileName);
 
     if (!inputFile.is_open()) {
         throw runtime_error("Failed to open input file: " + fileName);
     }
 
-    map<string, int> wordCounts;
+    map<string, WordData> wordData;
     string line;
+    int lineNum = 0;
 
     while (getline(inputFile, line)) {
+        lineNum++;
+
         stringstream ss(line);
         string word;
 
         while (ss >> word) {
             string cleanedWord = cleanWord(word);
             if (!cleanedWord.empty()) {
-                wordCounts[cleanedWord]++;
+                wordData[cleanedWord].count++;
+                wordData[cleanedWord].lineNums.insert(lineNum);
             }
         }
     }
 
     inputFile.close();
-    return wordCounts;
+    return wordData;
 }
 
-void writeWordCountsToFile(const map<string, int>& wordCounts, const string& fileName) {
-    ofstream outputFile(fileName);
+void writeWordDataToFile(const map<string, WordData>& wordData, const string& fileName) {
+    std::ofstream outputFile(fileName);
+    if (!outputFile.is_open()) {
+        throw std::runtime_error("Failed to open output file: " + fileName);
+    }
 
-    for (const auto& entry : wordCounts) {
-        if (entry.second > 1) {
-            outputFile << entry.first << " " << entry.second << endl;
+    outputFile << std::setw(15) << std::left << "Word"
+               << std::setw(10) << "Count"
+               << "Lines" << std::endl;
+    outputFile << "-------------------------------------------------------------------------------" << std::endl;
+
+    for (const auto& entry : wordData) {
+        if (entry.second.count > 1) {
+            outputFile << std::setw(15) << std::left << entry.first
+                       << std::setw(10) << entry.second.count;
+
+            for (const int lineNum : entry.second.lineNums) {
+                outputFile << lineNum << " ";
+            }
+            outputFile << std::endl;
         }
     }
 
     outputFile.close();
 }
 
-void writeWordCountsToTerminal(const map<string, int>& wordCounts) {
-    for (const auto& entry : wordCounts) {
-        if (entry.second > 1) {
-            cout << entry.first << " " << entry.second << endl;
+void writeWordDataToTerminal(const map<string, WordData>& wordData) {
+    cout << std::setw(15) << std::left << "Word"
+         << std::setw(10) << "Count"
+         << "Lines" << std::endl;
+    cout << "-------------------------------------------------------------------------------" << std::endl;
+
+    for (const auto& entry : wordData) {
+        if (entry.second.count > 1) {
+            cout << std::setw(15) << std::left << entry.first
+                 << std::setw(10) << entry.second.count;
+
+            for (const int lineNum : entry.second.lineNums) {
+                cout << lineNum << " ";
+            }
+            cout << std::endl;
         }
     }
 }
