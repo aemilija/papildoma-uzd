@@ -40,47 +40,68 @@ map<string, WordData> countWords(const string& fileName) {
     return wordData;
 }
 
-void writeWordDataToFile(const map<string, WordData>& wordData, const string& fileName) {
-    std::ofstream outputFile(fileName);
-    if (!outputFile.is_open()) {
-        throw std::runtime_error("Failed to open output file: " + fileName);
+vector<string> extractURLs(const string& text) {
+    vector<string> urls;
+    regex urlRegex(R"(\b((https|http?://|www\.)?[a-zA-Z0-9-]+\.(com|org|net|edu|gov|mil|int|info|biz|xyz|name|io|ai|museum|travel|tech|lt|[a-zA-Z]{2})(/[^\s]*)?)\b)");
+    auto wordsBegin = sregex_iterator(text.begin(), text.end(), urlRegex);
+    auto wordsEnd = sregex_iterator();
+
+    for (sregex_iterator i = wordsBegin; i != wordsEnd; ++i) {
+        urls.push_back(i->str());
     }
 
-    outputFile << std::setw(15) << std::left << "Word"
-               << std::setw(10) << "Count"
-               << "Lines" << std::endl;
+    return urls;
+}
+
+void writeWordDataToFile(const map<string, WordData>& wordData, const string& fileName, const string& text) {
+    ofstream outputFile(fileName);
+    vector<string> urls = extractURLs(text);
+    if (!outputFile.is_open()) {
+        throw runtime_error("Failed to open output file: " + fileName);
+    }
+
+    outputFile << setw(15) << left << "Word"
+               << setw(10) << "Count"
+               << "Lines" << endl;
     outputFile << "-------------------------------------------------------------------------------" << std::endl;
 
     for (const auto& entry : wordData) {
         if (entry.second.count > 1) {
-            outputFile << std::setw(15) << std::left << entry.first
-                       << std::setw(10) << entry.second.count;
+            outputFile << setw(15) << left << entry.first
+                       << setw(10) << entry.second.count;
 
             for (const int lineNum : entry.second.lineNums) {
                 outputFile << lineNum << " ";
             }
-            outputFile << std::endl;
+            outputFile << endl;
         }
+    }
+
+    outputFile << "-------------------------------------------------------------------------------" << endl;
+    outputFile << "URLs:" << endl;
+
+        for (const auto& url : urls) {
+        outputFile << url << endl;
     }
 
     outputFile.close();
 }
 
 void writeWordDataToTerminal(const map<string, WordData>& wordData) {
-    cout << std::setw(15) << std::left << "Word"
-         << std::setw(10) << "Count"
-         << "Lines" << std::endl;
-    cout << "-------------------------------------------------------------------------------" << std::endl;
+    cout << setw(15) << left << "Word"
+         << setw(10) << "Count"
+         << "Lines" << endl;
+    cout << "-------------------------------------------------------------------------------" << endl;
 
     for (const auto& entry : wordData) {
         if (entry.second.count > 1) {
-            cout << std::setw(15) << std::left << entry.first
-                 << std::setw(10) << entry.second.count;
+            cout << setw(15) << left << entry.first
+                 << setw(10) << entry.second.count;
 
             for (const int lineNum : entry.second.lineNums) {
                 cout << lineNum << " ";
             }
-            cout << std::endl;
+            cout << endl;
         }
     }
 }
