@@ -20,7 +20,7 @@ int main() {
     map<string, WordData> wordData = countWords(inputFileName);
 
     if (writeChoice == 'y') {
-        writeWordDataToTerminal(wordData);
+        writeWordDataToTerminal(wordData, text);
     }
     else {
         cout << "Output file name: ";
