@@ -42,7 +42,7 @@ map<string, WordData> countWords(const string& fileName) {
 
 vector<string> extractURLs(const string& text) {
     vector<string> urls;
-    regex urlRegex(R"(\b((https|http?://|www\.)?[a-zA-Z0-9-]+\.(com|org|net|edu|gov|mil|int|info|biz|xyz|name|io|ai|museum|travel|tech|lt|[a-zA-Z]{2})(/[^\s]*)?)\b)");
+    regex urlRegex(R"(\b((https?|http?://|www\.)?[a-zA-Z0-9-]+\.(com|org|net|edu|arpa|gov|mil|int|info|biz|xyz|name|io|ai|museum|travel|tech|lt|lv|uk|blog|bot|[a-zA-Z]{2})(/[^\s]*)?)\b)");
     auto wordsBegin = sregex_iterator(text.begin(), text.end(), urlRegex);
     auto wordsEnd = sregex_iterator();
 
